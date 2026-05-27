@@ -14,13 +14,14 @@ import base64
 import requests
 import pytest
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "") or os.environ.get("EXPO_PUBLIC_BACKEND_URL", "")
+BASE_URL = BASE_URL.rstrip("/")
 if not BASE_URL:
     # Fallback to frontend/.env loaded value if running outside docker
     try:
         with open("/app/frontend/.env") as fh:
             for line in fh:
-                if line.startswith("REACT_APP_BACKEND_URL="):
+                if line.startswith("REACT_APP_BACKEND_URL=") or line.startswith("EXPO_PUBLIC_BACKEND_URL="):
                     BASE_URL = line.split("=", 1)[1].strip().rstrip("/")
                     break
     except Exception:

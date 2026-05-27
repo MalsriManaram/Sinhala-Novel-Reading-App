@@ -26,8 +26,6 @@
     "web": { "bundler": "metro", "output": "static" },
     "plugins": [
       "expo-router",
-      "expo-secure-store",
-      "expo-screen-capture",
       "expo-font"
     ],
     "experiments": { "typedRoutes": false }

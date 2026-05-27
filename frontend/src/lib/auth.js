@@ -1,15 +1,10 @@
 import { create } from "zustand";
-import { api } from "./api";
+import { api, setTokens, clearTokens } from "./api";
 
-export const useAuth = create((set, get) => ({
+export const useAuth = create((set) => ({
   user: null,
   loading: true,
   bootstrap: async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      set({ loading: false });
-      return;
-    }
     try {
       const r = await api.get("/auth/me");
       set({ user: r.data, loading: false });
@@ -17,17 +12,42 @@ export const useAuth = create((set, get) => ({
       set({ user: null, loading: false });
     }
   },
-  login: async (email, password) => {
+  loginEmail: async (email, password) => {
     const r = await api.post("/auth/login", { email, password });
-    localStorage.setItem("access_token", r.data.access_token);
-    localStorage.setItem("refresh_token", r.data.refresh_token);
+    await setTokens(r.data.access_token, r.data.refresh_token);
     set({ user: r.data.user });
     return r.data.user;
   },
-  logout: async () => {
-    try { await api.post("/auth/logout"); } catch (_) {}
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+  registerEmail: async (email, password, name, country_code) => {
+    const r = await api.post("/auth/register", { email, password, name, country_code });
+    await setTokens(r.data.access_token, r.data.refresh_token);
+    set({ user: r.data.user });
+    return r.data.user;
+  },
+  requestOTP: async (phone) => {
+    const r = await api.post("/auth/otp/request", { phone, purpose: "login" });
+    return r.data;
+  },
+  verifyOTP: async (phone, code) => {
+    const r = await api.post("/auth/otp/verify", { phone, code });
+    await setTokens(r.data.access_token, r.data.refresh_token);
+    set({ user: r.data.user });
+    return r.data.user;
+  },
+  socialLogin: async (provider) => {
+    // MOCKED — real impl would use expo-auth-session for Google and
+    // expo-apple-authentication for Apple, then exchange tokens with backend.
+    const r = await api.post("/auth/social", {
+      provider,
+      provider_token: `mock_${provider}_${Date.now()}`,
+      name: provider === "apple" ? "Apple User" : "Google User",
+    });
+    await setTokens(r.data.access_token, r.data.refresh_token);
+    set({ user: r.data.user });
+    return r.data.user;
+  },
+  signOut: async () => {
+    await clearTokens();
     set({ user: null });
   },
 }));

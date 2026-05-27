@@ -1,10 +1,6 @@
 /**
- * AES-256-GCM helpers using WebCrypto via expo-crypto's polyfill.
- * The content key is fetched fresh from the backend on every app
- * launch (see lib/contentKey.js) and is kept only in memory.
- *
- * MOCKED: in production we would use react-native-quick-crypto or
- * react-native-aes-crypto for hardware-backed performance.
+ * AES-256-GCM helpers — native build only.  Web build doesn't have native
+ * crypto wired here and the Library/Reader download buttons short-circuit on web.
  */
 import * as Crypto from "expo-crypto";
 

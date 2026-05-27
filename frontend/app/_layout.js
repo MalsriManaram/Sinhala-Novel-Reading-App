@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
+import { Platform } from "react-native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import * as ScreenCapture from "expo-screen-capture";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useAuth } from "../src/lib/auth";
 import { useTheme } from "../src/theme/store";
@@ -14,11 +14,13 @@ export default function RootLayout() {
   const user = useAuth((s) => s.user);
 
   useEffect(() => {
-    // Block screenshots & screen recording on both iOS and Android (anti-piracy)
-    ScreenCapture.preventScreenCaptureAsync().catch(() => {});
+    // Block screenshots & screen recording on native devices only (anti-piracy)
+    if (Platform.OS === "ios" || Platform.OS === "android") {
+      const sc = require("expo-screen-capture");
+      sc.preventScreenCaptureAsync().catch(() => {});
+    }
     initTheme();
     bootstrap();
-    return () => { ScreenCapture.allowScreenCaptureAsync().catch(() => {}); };
   }, []);
 
   useEffect(() => {

@@ -23,10 +23,13 @@ export default function Library() {
   useEffect(() => {
     api.get("/ratings/mine").then((r) => setRatings(r.data)).catch(() => {});
     (async () => {
+      if (Platform.OS === "web") return;
       try {
-        const info = await FileSystem.getInfoAsync(OFFLINE_DIR);
+        const FileSystem = require("expo-file-system");
+        const dir = FileSystem.documentDirectory + "offline/";
+        const info = await FileSystem.getInfoAsync(dir);
         if (info.exists) {
-          const files = await FileSystem.readDirectoryAsync(OFFLINE_DIR);
+          const files = await FileSystem.readDirectoryAsync(dir);
           setDownloads(files);
         }
       } catch (_) {}

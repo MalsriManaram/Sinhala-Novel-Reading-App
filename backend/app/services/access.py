@@ -4,10 +4,16 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.models.ad_unlock import AdUnlock
 from app.models.subscription import Subscription
+from app.models.user import User
 
 
 def is_user_premium(db: Session, user_id: int) -> bool:
     now = datetime.now(timezone.utc)
+    # 1) Honor the explicit User.premium_status flag (admins, comped users, ...)
+    user = db.query(User).filter(User.id == user_id).first()
+    if user and (user.premium_status or user.role == "admin"):
+        return True
+    # 2) Otherwise, fall back to the latest active subscription
     sub = (
         db.query(Subscription)
         .filter(Subscription.user_id == user_id, Subscription.status == "active")

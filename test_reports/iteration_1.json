@@ -1,0 +1,51 @@
+{
+  "summary": "First end-to-end pass of Sinhala Novel Reading App. Backend pytest suite (42 cases) covers auth, novels, chapters, ratings, subscriptions, ads, reminders, TTS (real OpenAI via Emergent), security, admin RBAC and rate-limits — 40/42 passing. The 2 failures expose ONE real bug: services/access.py:is_user_premium() only checks the Subscription table and ignores user.premium_status, so the seeded admin (premium_status=True but no Subscription row) cannot read premium chapters nor fetch /api/security/content-key. Admin web frontend (Login, Overview, Novels, Users, Push, Mobile Preview) loads and works; sidebar contains 6 items and NO Settings link as required.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/chapters/{id} (premium chapters) & /api/security/content-key",
+        "issue": "Admin (seeded with users.premium_status=True) is treated as NON-premium because services/access.py:is_user_premium() only looks at the Subscription table and never reads the user.premium_status flag. Result: admin sees locked premium chapters (locked:true, empty content) and gets 403 from /api/security/content-key. Subscribed users work correctly.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "/api/subscriptions/paywall-config",
+        "issue": "k8s ingress strips the CF-IPCountry header so geo detection only works via X-Country-Code in this environment. Production CF will likely set it. Consider documenting / adding X-Forwarded-Country fallback."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Users page",
+        "issues": ["Test did not detect an explicit 'Admin' role badge on the admin row; role column shows lowercase 'user'/'admin'. Not blocking but spec expected a styled Admin badge."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix services/access.py:is_user_premium() — also return True when user.premium_status is True (or, alternatively, have the seed create a perpetual Subscription row for the admin). This unblocks admin reading premium chapters and /api/security/content-key.",
+    "Optional: add a styled 'Admin' role badge in Users.js for users with role=='admin'.",
+    "Optional: document or auto-translate alternate country headers (X-Forwarded-Country) for paywall-config geo detection behind k8s ingress."
+  ],
+  "critical_code_review_comments": [
+    "is_user_premium() should respect the explicit user.premium_status flag set by seed/admin promotion. Currently the flag is dead weight on the User model.",
+    "Rate-limit storage is in-memory per worker; fine for single-worker dev but document that it resets on redeploy.",
+    "TTS endpoint accepts arbitrary model names and returns 502 on invalid value; consider validating against the supported list ('tts-1', 'tts-1-hd') in the request schema for a cleaner 400."
+  ],
+  "updated_files": [
+    "/app/backend/tests/__init__.py (new)",
+    "/app/backend/tests/backend_test.py (new — 42 pytest cases)"
+  ],
+  "success_rate": {"backend": "95% (40/42)", "frontend": "100% of admin web flows exercised"},
+  "test_credentials": "Admin: ruvinda@sinhalanovels.app / Ruvinda@2026 (seeded). Test users are auto-created per test with TEST_ prefix.",
+  "seed_data_creation": "Tests register fresh users (TEST_user_*, TEST_sub_*, TEST_ideamart_*, TEST_wh_*, TEST_ads_*, TEST_premread_*, TEST_ck_*) and one TEST_Novel that is cleaned up in-test.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run: pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml. The 2 failing tests (TestChapters::test_premium_chapter_open_for_admin, TestSecurity::test_content_key_premium) are intentional regression tests for the premium-status bug — once main agent fixes is_user_premium to honour user.premium_status, these should turn green. If you run the login_rate_limit test, the auth login endpoint will be 429 for ~60s — wait a minute before any subsequent admin login UI tests.",
+  "rca of the issue": "BUG RCA: app/services/access.py:is_user_premium(db, user_id) returns True only when a Subscription row with status='active' and (expires_at is None or in the future) exists. The seed (app/services/seed.py) sets User.premium_status=True on the admin but never inserts a Subscription row. Every paywall check (chapters router line ~30-50 and security/content-key) calls is_user_premium() → False for admin → locked chapter / 403. FIX: update is_user_premium to also return True when the user record has premium_status=True (or role='admin'), OR have the seed create a non-expiring Subscription(provider='comp', plan='lifetime', status='active', expires_at=None) for any admin/comp-premium user. REPRODUCTION: 1) login admin via /api/auth/login (premium_status=True returned). 2) GET /api/chapters/<premium-id> with admin token -> {locked:true, content:''}. 3) GET /api/security/content-key with admin token -> 403."
+}

@@ -1,0 +1,138 @@
+{
+  "theme_and_archetype": {
+    "domain": "Entertainment / Book Reading",
+    "theme": "Toggleable (Dark/Light)",
+    "archetype": "Archetype 5 (Luxury) adapted for mobile reading app. Premium frosted glass, cinematic lighting, rich muted gold accents, deep backgrounds."
+  },
+  "fonts": {
+    "latin": {
+      "headings": "Outfit",
+      "body": "Lora",
+      "ui": "Outfit"
+    },
+    "sinhala": {
+      "headings": "Abhaya Libre",
+      "body": "Abhaya Libre",
+      "ui": "Noto Sans Sinhala"
+    },
+    "pairing_rules": "Use Outfit and Noto Sans Sinhala for clean, modern premium UI elements (nav, tabs, labels). Use Lora and Abhaya Libre for the immersive long-form reading experience on the Reader Screen. Never use Inter or Roboto."
+  },
+  "color_system": {
+    "dark_mode": {
+      "background_base": "#0B0C10",
+      "background_glass": "rgba(25, 26, 35, 0.6)",
+      "background_gradient": "linear-gradient(180deg, #0B0C10 0%, #15161C 100%)",
+      "primary": "#C7923E",
+      "primary_hover": "#D8A758",
+      "text_primary": "#F8F8F7",
+      "text_secondary": "#A1A1A6",
+      "border": "rgba(255, 255, 255, 0.1)",
+      "highlight_sentence": "rgba(199, 146, 62, 0.25)",
+      "card_bg": "#15161C"
+    },
+    "light_mode": {
+      "background_base": "#F8F8F7",
+      "background_glass": "rgba(255, 255, 255, 0.7)",
+      "background_gradient": "linear-gradient(180deg, #F8F8F7 0%, #EBEBEA 100%)",
+      "primary": "#B27A2B",
+      "primary_hover": "#9C6A24",
+      "text_primary": "#0B0C10",
+      "text_secondary": "#5C5C60",
+      "border": "rgba(0, 0, 0, 0.08)",
+      "highlight_sentence": "rgba(178, 122, 43, 0.15)",
+      "card_bg": "#FFFFFF"
+    }
+  },
+  "design_tracks": {
+    "mobile": {
+      "general": {
+        "layout": "Mobile-first Expo React Native layout with generous spacing (p-6, p-8 for containers).",
+        "surfaces": "Heavy use of Glassmorphism (blur-xl) for floating elements, bottom navs, and modals to create a premium feel without overwhelming the content."
+      },
+      "bottom_navigation": {
+        "style": "Glassmorphic floating or docked bar. backdrop-filter: blur(20px). Border top 1px solid theme border.",
+        "tabs": ["Home", "Waitlist", "Library", "Profile"],
+        "restrictions": "Settings icon MUST NOT be in the bottom navigation. It must be inside the Profile drawer/screen.",
+        "active_state": "Primary gold color (#C7923E) for active icon, subtle glow effect."
+      },
+      "components": {
+        "novel_cover_card": {
+          "aspect_ratio": "2:3 (Standard Book Cover)",
+          "style": "Subtle shadow, rounded-xl. High-quality image filling the card.",
+          "overlay": "Glassmorphic rating pill (blur + semi-transparent bg) at the bottom left displaying average star rating and total count (e.g. '★ 4.8 (1.2k)'). Title and genre tags positioned below the card or overlaid with a dark gradient at the bottom."
+        },
+        "worth_the_wait_feed": {
+          "layout": "Vertical feed of upcoming novels. High visual impact with full-width or large bento-style cards.",
+          "interaction": "'Remind Me' toggle button - morphs from outlined to solid primary color with a micro-bounce animation when toggled."
+        },
+        "reader_screen": {
+          "layout": "Minimalist, edge-to-edge text. Headers and footers auto-hide on scroll down, reappear on scroll up/tap.",
+          "typography": "Adjustable font size (slider). Sinhala rendered perfectly with Abhaya Libre. No truncation.",
+          "tts_player": "Floating glassmorphic pill at the bottom. Controls: Play/Pause, Rewind 15s, Speed (1x, 1.25x, 1.5x, 2x).",
+          "sentence_highlighting": "Currently spoken sentence receives a soft primary-tinted background highlight."
+        },
+        "paywall_and_modals": {
+          "style": "Bottom sheets with glassmorphic backgrounds sliding up. Dimmed overlay behind.",
+          "otp_modal": "Clean, large touch-targets for OTP input. Dialog Ideamart branding subtle but clear.",
+          "subscription_tiers": "Free tier shows Rewarded Video unlock button with daily cap counter. Premium tier highlighted with gold accents and 1-tap cancel copy.",
+          "rating_modal": "Pops up at chapter end. 5 large interactive stars. Editable."
+        }
+      }
+    },
+    "admin_web": {
+      "general": {
+        "layout": "Sidebar navigation + main content area. Data-dense but retains premium spacing and typography.",
+        "surfaces": "Solid card backgrounds with 1px borders. Subtle glassmorphism on the top header only."
+      },
+      "sidebar": {
+        "style": "Dark mode default for sidebar (even if main content is light) to maintain premium authority, OR follows system theme but with a distinct background tint."
+      },
+      "data_tables": {
+        "style": "Customized Shadcn tables. Loose spacing (p-4 to p-6 per cell). Row hover effects. Status badges (Premium, Free, Scheduled) use soft pastel backgrounds with dark text."
+      },
+      "forms": {
+        "rich_text_editor": "Clean, borderless feeling editor for chapters, wrapped in a 1px border container. Floating toolbar.",
+        "mocked_integrations": "OneSignal push composer clearly marked as (Mocked) in the UI with a distinct badge."
+      }
+    }
+  },
+  "image_urls": [
+    {
+      "category": "backgrounds",
+      "url": "https://static.prod-images.emergentagent.com/jobs/d3c4d732-259e-4a24-bc00-e92ca67a9dfa/images/3f1ceec3a9cf54916a396493d198500d9adde82684665bd390f7071fc5e30f58.png",
+      "description": "Dark mode premium frosted glass background"
+    },
+    {
+      "category": "backgrounds",
+      "url": "https://static.prod-images.emergentagent.com/jobs/d3c4d732-259e-4a24-bc00-e92ca67a9dfa/images/a0afba716b47ce3a2d084c0dc3b8b685c4e4d57e55eefde733aa5fc70e252cdd.png",
+      "description": "Light mode premium frosted glass background"
+    },
+    {
+      "category": "novel_covers",
+      "url": "https://images.unsplash.com/photo-1622798203916-a91709f62d2a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHw0fHxmYW50YXN5JTIwcm9tYW5jZSUyMGJvb2slMjBjb3ZlciUyMGFydHxlbnwwfHx8fDE3Nzk4NzkwNjV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Fantasy romance novel cover placeholder (woman in white dress)"
+    },
+    {
+      "category": "novel_covers",
+      "url": "https://images.unsplash.com/photo-1771576741909-d0bf6f60fb05?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwyfHxmYW50YXN5JTIwcm9tYW5jZSUyMGJvb2slMjBjb3ZlciUyMGFydHxlbnwwfHx8fDE3Nzk4NzkwNjV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Romance/Fantasy open book aesthetic cover placeholder"
+    },
+    {
+      "category": "novel_covers",
+      "url": "https://images.unsplash.com/photo-1489846986031-7cea03ab8fd0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHwxfHxteXN0ZXJ5JTIwdGhyaWxsZXIlMjBkYXJrJTIwY2luZW1hdGljJTIwcG9zdGVyfGVufDB8fHx8MTc3OTg3OTA2NXww&ixlib=rb-4.1.0&q=85",
+      "description": "Dark mystery thriller novel cover placeholder (person walking in trees)"
+    },
+    {
+      "category": "novel_covers",
+      "url": "https://images.pexels.com/photos/28302225/pexels-photo-28302225.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Thriller/Horror novel cover placeholder (shadowy figure)"
+    }
+  ],
+  "instructions_to_main_agent": [
+    "Use .js files exclusively, not .tsx. Ensure all React and Expo components are written in standard JavaScript with ES6+ syntax.",
+    "ALL interactive elements (buttons, inputs, sliders, toggles) and key informational elements (balances, statuses) MUST include a 'data-testid' attribute in the web admin, and 'testID' in Expo React Native.",
+    "TestID Naming Convention: kebab-case and role-based (e.g., testID='reader-play-pause-btn', data-testid='admin-login-submit').",
+    "Never use generic placeholder image services (like via.placeholder.com). Strictly use the image URLs provided in the image_urls array above for all novel covers and backgrounds.",
+    "Mock all third-party integrations (Google Auth, Apple Login, Dialog Ideamart OTP, RevenueCat, OneSignal, Rewarded Video Ads) visually and logically in the frontend. Highlight the mocked status where appropriate (especially in the admin dashboard)."
+  ]
+}
